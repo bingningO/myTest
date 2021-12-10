@@ -32,7 +32,7 @@ jobs:
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
           FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
         run: |
-          ./gradlew :app:assembleMobileDebug appDistributionUploadMobileDebug
+          ./gradlew :app:assembleDebug appDistributionUploadMobileDebug
 #       - uses: 8398a7/action-slack@v3
 #         with:
 #           fields: workflow,message,job,commit,repo,ref

@@ -28,4 +28,37 @@ jobs:
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
-          arguments: assembleDebug
+          arguments: :app-googleplay:assembleRelease :app-fire:assembleRelease
+
+      - name: Sign artifact
+        id: signArtifact
+        uses: r0adkll/sign-android-release@v1.0.1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          alias: ${{ secrets.RELEASE_ALIAS }}
+          signingKeyBase64: ${{ secrets.RELEASE_KEY_BASE64 }}
+          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PW }}
+          keyPassword: ${{ secrets.RELEASE_ALIAS_PW }}
+
+      - name: Distribute Apk
+        env:
+          GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx5120m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
+          TZ: "/usr/share/zoneinfo/Asia/Tokyo"
+          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+        run: |
+          ./gradlew :app-googleplay:appDistributionUploadRelease :app-fire:appDistributionUploadRelease
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          fields: workflow,message,job,commit,repo,ref
+          status: custom
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: '${{ job.status }}' === 'success' ? `:truck: MAD for fire & googleplay APKs have been uploaded to Firebase APP Distribution.\nYou can download the latest MAD App from [App Tester].` : '${{ job.status }}' === 'failure' ? `:x: MAD for fire & googleplay APKs had something wrong with uploading to Firebase APP Distribution.\nWorkflow : ${process.env.AS_WORKFLOW}` : ``,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.RELEASE_NOTICE_SLACK_WEBHOOK }}
+        if: always()

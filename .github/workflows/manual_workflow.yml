@@ -30,15 +30,15 @@ jobs:
           configuration-cache-enabled: true
           arguments: :app-googleplay:assembleRelease :app-fire:assembleRelease
 
-      - name: Sign artifact
-        id: signArtifact
-        uses: r0adkll/sign-android-release@v1.0.1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          alias: ${{ secrets.RELEASE_ALIAS }}
-          signingKeyBase64: ${{ secrets.RELEASE_KEY_BASE64 }}
-          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PW }}
-          keyPassword: ${{ secrets.RELEASE_ALIAS_PW }}
+#      - name: Sign artifact
+#        id: signArtifact
+#        uses: r0adkll/sign-android-release@v1.0.1
+#        with:
+#          releaseDirectory: app/build/outputs/apk/release
+#          alias: ${{ secrets.RELEASE_ALIAS }}
+#          signingKeyBase64: ${{ secrets.RELEASE_KEY_BASE64 }}
+#          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PW }}
+#          keyPassword: ${{ secrets.RELEASE_ALIAS_PW }}
 
 #      - name: Distribute Apk
 #        env:

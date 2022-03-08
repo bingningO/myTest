@@ -1,6 +1,7 @@
 name: Firebase App Distribution Debug
 
-on: workflow_dispatch
+on:
+  workflow_dispatch
 
 jobs:
   app_distribution:

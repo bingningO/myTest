@@ -40,10 +40,10 @@ jobs:
           keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PW }}
           keyPassword: ${{ secrets.RELEASE_ALIAS_PW }}
 
-      - name: Distribute Apk
-        env:
-          GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx5120m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
-          TZ: "/usr/share/zoneinfo/Asia/Tokyo"
-          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
-        run: |
-          ./gradlew :app-googleplay:appDistributionUploadRelease :app-fire:appDistributionUploadRelease
+#      - name: Distribute Apk
+#        env:
+#          GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx5120m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
+#          TZ: "/usr/share/zoneinfo/Asia/Tokyo"
+#          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+#        run: |
+#          ./gradlew :app-googleplay:appDistributionUploadRelease :app-fire:appDistributionUploadRelease

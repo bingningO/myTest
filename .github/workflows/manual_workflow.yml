@@ -47,17 +47,3 @@ jobs:
           FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
         run: |
           ./gradlew :app-googleplay:appDistributionUploadRelease :app-fire:appDistributionUploadRelease
-
-      - uses: 8398a7/action-slack@v3
-        with:
-          fields: workflow,message,job,commit,repo,ref
-          status: custom
-          custom_payload: |
-            {
-              attachments: [{
-                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: '${{ job.status }}' === 'success' ? `:truck: MAD for fire & googleplay APKs have been uploaded to Firebase APP Distribution.\nYou can download the latest MAD App from [App Tester].` : '${{ job.status }}' === 'failure' ? `:x: MAD for fire & googleplay APKs had something wrong with uploading to Firebase APP Distribution.\nWorkflow : ${process.env.AS_WORKFLOW}` : ``,
-              }]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.RELEASE_NOTICE_SLACK_WEBHOOK }}

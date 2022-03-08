@@ -1,49 +1,32 @@
-# This is a basic workflow to help you get started with Actions
+name: Firebase App Distribution Debug
 
-name: Firebase App Distribution
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-#   push:
-#     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   app_distribution:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Git checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUBTOKEN }}
+          ssh-key: ${{ secrets.SSH_KEY }}
+          submodules: 'recursive'
+          ref:  ${{ github.head_ref }}
 
       - name: set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: build debug and upload
-        env:
-          GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx5120m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
-          TZ: "/usr/share/zoneinfo/Asia/Tokyo"
-          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
-        run: |
-          ./gradlew :app:assembleMobileDebug appDistributionUploadMobileDebug
-#       - uses: 8398a7/action-slack@v3
-#         with:
-#           fields: workflow,message,job,commit,repo,ref
-#           status: custom
-#           custom_payload: |
-#             {
-#               attachments: [{
-#                 color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-#                 text: '${{ job.status }}' === 'success' ? `:truck: Android Mobile アプリの apk を Firebase App Distribution に配信しました！\nCommit: ${process.env.AS_MESSAGE} (${process.env.AS_COMMIT})` : '${{ job.status }}' === 'failure' ? `:x: Android Mobile アプリの apk の Firebase App Distribution での配布に失敗しました。\nCommit: ${process.env.AS_MESSAGE} (${process.env.AS_COMMIT})\nWorkflow : ${process.env.AS_WORKFLOW}` : ``,
-#               }]
-#             }
-#         env:
-#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-#         if: always()
+
+      - name: Build Apk
+        id: buildApk
+        uses: eskatos/gradle-command-action@v1.3.3
+        with:
+          gradle-version: current
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+          arguments: assembleDebug

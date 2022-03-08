@@ -28,7 +28,7 @@ jobs:
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
-          arguments: :app-googleplay:assembleRelease :app-fire:assembleRelease
+          arguments: assembleDebug
 
 #      - name: Sign artifact
 #        id: signArtifact

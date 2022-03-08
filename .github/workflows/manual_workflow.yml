@@ -61,4 +61,3 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.RELEASE_NOTICE_SLACK_WEBHOOK }}
-        if: always()
